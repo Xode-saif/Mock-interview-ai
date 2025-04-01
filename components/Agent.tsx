@@ -1,6 +1,8 @@
-
+"use client"
 import { cn } from '@/lib/utils';
 import Image from 'next/image'
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 enum CallStatus{
     INACTIVE='INACTIVE',
@@ -9,12 +11,33 @@ enum CallStatus{
     FINISHED='FINISHED'
 }
 
+interface SavedMessage{
+    role:'user'|'system'|'assistant';
+    content:string;
+}
 
-const Agent = ({userName}:AgentProps) => {
-    const callStatus = CallStatus.INACTIVE
-    const isSpeaking = true;
-    const messages = ['whats your name', 'my name is saif, nice to meet you ']
-    const lastMessage = messages[messages.length-1];
+const Agent = ({userName,userId,type}:AgentProps) => {
+    const router = useRouter();
+    const [isSpeaking, setIsSpeaking] = useState(false);
+    const [callStatus,setCallstatus] = useState<CallStatus>(CallStatus.INACTIVE);
+    const [messages,setMessages] = useState<SavedMessage[]>([]);
+
+    useEffect(()=>{
+        const onCallStart = () =>setCallstatus(CallStatus.ACTIVE)
+        const onCallEnd = ()=> setCallstatus(CallStatus.FINISHED);
+        const onMessage = (message:Message)=>{
+            if(message.type ==='transcript' && message.transcriptType === 'final'){
+                const newMessage = {role:message.role, content:message.transcript}
+
+                setMessages((prev)=> [...prev, newMessage]);
+            }
+        }
+    },[])
+
+    // const callStatus = CallStatus.INACTIVE
+    // const isSpeaking = true;
+    // const messages = ['whats your name', 'my name is saif, nice to meet you ']
+    // const lastMessage = messages[messages.length-1];
   return (
     <>
         <div className='call-view'>
@@ -43,12 +66,12 @@ const Agent = ({userName}:AgentProps) => {
             </div>
         )}
 
-        <div className='w-full flex justify-center'>
+        <div className='w-full flex justify-center mt-8'>
             {callStatus !== "ACTIVE" ? (
                 <button className='relative btn-call'>
                     <span className={cn(`absolute animate-ping rounded-all opacity-75`,callStatus!=='CONNECTING' & 'hidden')}/>
 
-                    <span>
+                    <span className=''>
                         {callStatus === 'INACTIVE' || callStatus === 'FINISHED' ? 'Call' : '. . .'}
                     </span>
                 </button>

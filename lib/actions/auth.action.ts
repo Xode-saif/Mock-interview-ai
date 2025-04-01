@@ -2,6 +2,7 @@
 
 import { auth, db } from "@/firebase/admin";
 import { cookies } from "next/headers";
+import {  NextResponse } from "next/server";
 
 export async function signUp({params}:{params:SignUpParams}){
     const {uid,name,email} =  await params;
@@ -110,4 +111,12 @@ export async function isAuthenticated(){
 
     return !!user;   // if we have a user return a true -->boolean value --- !! mark convert in to boolean value
                     // for ex. {name:"saif"}-> !{} => false -> !false=>true
+}
+
+
+export async function logoutUser(){
+    const cookieStore = await cookies();
+    cookieStore.delete('session');
+
+    return NextResponse.json({ success: true });
 }
