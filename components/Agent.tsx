@@ -64,13 +64,15 @@ const Agent = ({userName,userId,type}:AgentProps) => {
     const handleCall = async()=>{
         setCallstatus(CallStatus.CONNECTING);
 
-        await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,{
+            await vapi.start(process.env.NEXT_PUBLIC_VAPI_WORKFLOW_ID!,{
             variableValues:{
-                uesrname:userName,
+                username:userName,
                 userid:userId,
             }
         })
+        
     }
+    //handle end of the call
     const handleDisconnect = async()=>{
         setCallstatus(CallStatus.FINISHED);
 
@@ -113,7 +115,7 @@ const Agent = ({userName,userId,type}:AgentProps) => {
 
         <div className='w-full flex justify-center mt-8'>
             {callStatus !== "ACTIVE" ? (
-                <button className='relative btn-call' onClick={handleCall}>
+                <button className='relative btn-call' onClick={()=>handleCall()}>
                     <span className={cn(`absolute animate-ping rounded-all opacity-75`,callStatus!=='CONNECTING' && 'hidden')}/>
 
                     <span className=''>
@@ -121,7 +123,7 @@ const Agent = ({userName,userId,type}:AgentProps) => {
                     </span>
                 </button>
             ) : (
-                <button className='btn-disconnect' onClick={handleDisconnect}>
+                <button className='btn-disconnect' onClick={()=>handleDisconnect()}>
                     End
                 </button>
             )}
