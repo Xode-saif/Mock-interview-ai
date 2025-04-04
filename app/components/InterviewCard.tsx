@@ -5,7 +5,7 @@ import {getRandomInterviewCover} from '@/lib/utils'
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import DisplayTechIcon from './DisplayTechIcon';
-const InterviewCard = ({interviewId, userId, role,type,techstack,createdAt}:InterviewCardProps) => {
+const InterviewCard = ({id, userId, role,type,techstack,createdAt}:InterviewCardProps) => {
   // const feedback: Feedback | null = null; same as below code
   const feedback = null as Feedback | null;
   const normalizedType = /mix/gi.test(type)?'Mixed':type;
@@ -40,8 +40,8 @@ const InterviewCard = ({interviewId, userId, role,type,techstack,createdAt}:Inte
           <DisplayTechIcon techStack={techstack}/>
           <Button className='btn-primary'>
             <Link href={feedback?
-              `/interview/${interviewId}/feedback`:
-              `/interview/${interviewId}`
+              `/interview/${id}/feedback`:
+              `/interview/${id}`
               
             }>
               {feedback?'Check Feedback':'View Interview'}
