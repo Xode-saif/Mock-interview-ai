@@ -4,11 +4,14 @@ import Link from "next/link";
 import InterviewCard from "../components/InterviewCard";
 import { getCurrentUser } from "@/lib/actions/auth.action";
 import{getInterviewsByUserId, getLatestInterviews} from "@/lib/actions/general.action"
+import { redirect } from "next/navigation";
 
 export default async function Home() {
   const user = await getCurrentUser();
   // console.log("user",user);
-  
+  if(!user){
+    redirect('/sign-in')
+  }
   // const userInterviews = await getInterviewsByUserId(user?.id!)
   // const latestInterviews = await getLatestInterviews({userId:user?.id!},)
   //optimizing above two line 
