@@ -1,6 +1,7 @@
 import { db } from "@/firebase/admin";
 
 export async function getInterviewsByUserId(userId:string):Promise<Interview[]|null>{
+    console.log('userID',userId)
     const interview = await db.collection('interviews')
     .where('userId','==',userId)
     .orderBy('createdAt','desc')

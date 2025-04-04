@@ -7,7 +7,7 @@ import{getInterviewsByUserId, getLatestInterviews} from "@/lib/actions/general.a
 
 export default async function Home() {
   const user = await getCurrentUser();
-  console.log("user",user);
+  // console.log("user",user);
   
   // const userInterviews = await getInterviewsByUserId(user?.id!)
   // const latestInterviews = await getLatestInterviews({userId:user?.id!},)
