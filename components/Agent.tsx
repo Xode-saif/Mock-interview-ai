@@ -1,5 +1,6 @@
 "use client"
 import { interviewer } from '@/constants';
+import { createFeedback } from '@/lib/actions/general.action';
 import { cn } from '@/lib/utils';
 import { vapi } from '@/lib/vapi.sdk';
 import Image from 'next/image'
@@ -18,12 +19,12 @@ interface SavedMessage{
     content:string;
 }
 
-const Agent = ({userName,userId,type,interviewId,questions}:AgentProps) => {
+const Agent = ({userName,userId,type,interviewId,feedbackId,questions}:AgentProps) => {
     const router = useRouter();
     const [isSpeaking, setIsSpeaking] = useState(false);
     const [callStatus,setCallstatus] = useState<CallStatus>(CallStatus.INACTIVE);
     const [messages,setMessages] = useState<SavedMessage[]>([]);
- 
+    // const [lastMessage,setLastMessage] = useState<string>('')
     useEffect(()=>{
         const onCallStart = () =>setCallstatus(CallStatus.ACTIVE)
         const onCallEnd = ()=> setCallstatus(CallStatus.FINISHED);
@@ -61,10 +62,15 @@ const Agent = ({userName,userId,type,interviewId,questions}:AgentProps) => {
         console.log('Generate feedback here.')
 
         //TODO:create a server action that generate feedback
-        const {success, id} = {
-            success:true,
-            id:'feedback-id'
-        }
+        const {success, feedbackId:id} = await createFeedback({
+            interviewId:interviewId!,
+            userId:userId!,
+            transcript:messages,
+        });
+        // const {success, id} = {
+        //     success:true,
+        //     id:'feedback-id'
+        // }
 
         if(success && id){
             router.push(`/interview/${interviewId}/feedback`)
@@ -73,8 +79,11 @@ const Agent = ({userName,userId,type,interviewId,questions}:AgentProps) => {
             router.push('/')
         }
     }
-
     useEffect(()=>{
+        // if(messages.length > 0){
+        //     setLastMessage(messages[messages.length-1].content)
+        // }
+        
         if(callStatus === CallStatus.FINISHED){
             if(type === 'generate'){
                 router.push('/');
@@ -83,7 +92,7 @@ const Agent = ({userName,userId,type,interviewId,questions}:AgentProps) => {
             }
         }
         
-    },[messages,callStatus,type,userId] )
+    },[messages,callStatus,feedbackId,interviewId,router,type,userId] )
 
     //handling start of the call
     const handleCall = async()=>{
@@ -106,10 +115,10 @@ const Agent = ({userName,userId,type,interviewId,questions}:AgentProps) => {
                 variableValues:{
                     questions:formattedQuestions
                 }
-            })
+            });
         }
         
-    }
+    };
     //handle end of the call
     const handleDisconnect = async()=>{
         setCallstatus(CallStatus.FINISHED);
@@ -156,7 +165,7 @@ const Agent = ({userName,userId,type,interviewId,questions}:AgentProps) => {
                 <button className='relative btn-call' onClick={()=>handleCall()}>
                     <span className={cn(`absolute animate-ping rounded-all opacity-75`,callStatus!=='CONNECTING' && 'hidden')}/>
 
-                    <span className=''>
+                    <span className='relative'>
                         {isCallInactiveOrFinished ? 'Call' : '. . .'}
                     </span>
                 </button>

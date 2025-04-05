@@ -8,17 +8,19 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const user = await getCurrentUser();
-  // console.log("user",user);
+  console.log("user",user);
   if(!user){
     redirect('/sign-in')
   }
   // const userInterviews = await getInterviewsByUserId(user?.id!)
   // const latestInterviews = await getLatestInterviews({userId:user?.id!},)
   //optimizing above two line 
+
   const [userInterviews,latestInterviews] = await Promise.all([
-    await getInterviewsByUserId(user?.id!),
-    await getLatestInterviews({userId:user?.id!},)
+    getInterviewsByUserId(user?.id!),
+    getLatestInterviews({userId:user?.id!}),
   ])
+  
 
   console.log("userInterviews",userInterviews);
   console.log("latestInterviews",latestInterviews);
