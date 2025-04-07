@@ -8,10 +8,10 @@ import { redirect } from "next/navigation";
 
 export default async function Home() {
   const user = await getCurrentUser();
-  console.log("user",user);
-  if(!user){
-    redirect('/sign-in')
-  }
+  // console.log("user",user);
+  // if(!user){
+  //   redirect('/sign-in')
+  // }
   // const userInterviews = await getInterviewsByUserId(user?.id!)
   // const latestInterviews = await getLatestInterviews({userId:user?.id!},)
   //optimizing above two line 
@@ -22,8 +22,9 @@ export default async function Home() {
   ])
   
 
-  console.log("userInterviews",userInterviews);
-  console.log("latestInterviews",latestInterviews);
+  // console.log("userInterviews",userInterviews);
+  // console.log("latestInterviews",latestInterviews);
+
   const hasPastInterviews = userInterviews?.length > 0;
   const hasUpcomingInterviews = latestInterviews?.length > 0;
   return (
